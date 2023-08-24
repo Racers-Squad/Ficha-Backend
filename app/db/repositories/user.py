@@ -1,4 +1,5 @@
 from app.db import BaseRepository
+from app.models.common import Id
 from app.models.users import Users
 
 
@@ -11,16 +12,11 @@ class UserRepository(BaseRepository):
         rights = await self.fetch_one(f"SELECT role FROM users WHERE mail ='{email}'")
         return rights
 
-    async def insert_user(self, name: str,
-                          surname: str,
-                          mail: str,
-                          password: str,
-                          phone: str,
-                          role: int) -> int:
+    async def insert_user(self,
+                          name: str, surname: str, mail: str,
+                          password: str, phone: str, role: int) -> int:
         args = (name, surname, mail, password, phone, role)
-        user_id = await self.fetch_one(
-            "INSERT INTO user(name, surname, mail, password, phone, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
-            *args, )
-        return user_id
-
-
+        user = await self.fetch_one(
+            "INSERT INTO users(name, surname, mail, password, phone, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+            *args, serializer=Id)
+        return user
