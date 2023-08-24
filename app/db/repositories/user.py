@@ -22,3 +22,5 @@ class UserRepository(BaseRepository):
             "INSERT INTO user(name, surname, mail, password, phone, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
             *args, )
         return user_id
+
+
