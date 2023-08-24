@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class Wallets(BaseModel):
+class Wallet(BaseModel):
     user_id: int
     card_id: int
     currency: str
