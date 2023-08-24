@@ -5,8 +5,11 @@
     "description": "",
     "host": "localhost",
     "port": 8080,
-    "allowed_hosts": ["*"],
-    "api_prefix": "/api"
+    "allowed_hosts": [
+      "*"
+    ],
+    "api_prefix": "/api",
+    "secret_key": "maxkrasava"
   },
   "db": {
     "host": "localhost",

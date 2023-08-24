@@ -9,3 +9,12 @@ class Users(BaseModel):
     password: str
     phone: str
     role: int
+
+
+class RegisterRequest(BaseModel):
+    mail: str
+    name: str
+    surname: str
+    phone: str
+    password: str
+    role: int
