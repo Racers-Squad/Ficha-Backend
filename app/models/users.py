@@ -23,3 +23,7 @@ class RegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     mail: str
     password: str
+
+
+class CheckRequest(BaseModel):
+    token: str
