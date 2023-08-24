@@ -1,14 +1,12 @@
-import datetime
-
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-import jwt
 
 from app.api.errors import USER_ALREADY_EXISTS, PASSWORD_INCORRECT, USER_NOT_FOUND
 from app.config import Config
-from app.db import get_repository
-from app.db.repositories.user import UserRepository
+from app.dependencies.services import get_user_service
 from app.models.users import RegisterRequest, LoginRequest
+from app.services.users import Users
+from app.utils.exceptions import PasswordIncorrect, UserNotFound
 
 config = Config()
 
@@ -21,22 +19,11 @@ router = APIRouter(prefix="/users")
 )
 async def register(
         body: RegisterRequest,
-        user_repo: UserRepository = Depends(get_repository(UserRepository))
+        user_service: Users = Depends(get_user_service)
 ):
-    user_exists = await user_repo.get_user_by_email(body.mail)
-    if not user_exists:
-        payload = {
-            "mail": body.mail,
-            "name": body.name,
-            "surname": body.surname,
-            "phone": body.phone,
-            "password": body.password,
-            "role": body.role,
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
-        }
-        token = jwt.encode(payload, config.app.secret_key, algorithm="HS256")
-        await user_repo.insert_user(body.name, body.surname, body.mail, body.password, body.phone, body.role)
-        return JSONResponse({"access_token": token})
+    result = await user_service.register(body.mail, body.name, body.surname, body.phone, body.password, body.role)
+    if result:
+        return JSONResponse({"access_token": result})
     else:
         return JSONResponse({"error": USER_ALREADY_EXISTS}, status_code=500)
 
@@ -47,21 +34,14 @@ async def register(
 )
 async def login(
         body: LoginRequest,
-        user_repo: UserRepository = Depends(get_repository(UserRepository))
+        user_service: Users = Depends(get_user_service)
 ):
-    user_exists = await user_repo.get_user_by_email(body.mail)
-    if user_exists:
-        if user_exists.password == body.password:
-            payload = {
-                "mail": body.mail,
-                "password": body.password,
-                "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
-            }
-            token = jwt.encode(payload, config.app.secret_key, algorithm="HS256")
-            return JSONResponse({"access_token": token})
-        else:
-            return JSONResponse({"error": PASSWORD_INCORRECT}, status_code=500)
-    else:
+    try:
+        result = user_service.login(body.mail, body.password)
+        return JSONResponse({"access_token": result})
+    except PasswordIncorrect:
+        return JSONResponse({"error": PASSWORD_INCORRECT}, status_code=500)
+    except UserNotFound:
         return JSONResponse({"error": USER_NOT_FOUND}, status_code=404)
 
 
