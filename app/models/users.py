@@ -18,3 +18,8 @@ class RegisterRequest(BaseModel):
     phone: str
     password: str
     role: int
+
+
+class LoginRequest(BaseModel):
+    mail: str
+    password: str
