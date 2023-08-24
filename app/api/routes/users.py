@@ -35,6 +35,7 @@ async def register(
             "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
         }
         token = jwt.encode(payload, config.app.secret_key, algorithm="HS256")
+        await user_repo.insert_user(body.name, body.surname, body.mail, body.password, body.phone, body.role)
         return JSONResponse({"access_token": token})
     else:
         return JSONResponse({"error": USER_ALREADY_EXISTS}, status_code=500)
