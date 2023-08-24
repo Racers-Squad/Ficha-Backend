@@ -14,8 +14,8 @@ class Users:
         self.repo: UserRepository = repo
 
     async def register(
-        self,
-        mail: str, name: str, surname: str, phone: str, password: str, role: int
+            self,
+            mail: str, name: str, surname: str, phone: str, password: str, role: int
     ) -> Optional[str]:
         user_exists = await self.repo.get_user_by_email(mail)
         if not user_exists:
@@ -35,8 +35,8 @@ class Users:
             return None
 
     async def login(
-        self,
-        email: str, password: str
+            self,
+            email: str, password: str
     ):
         user_exists = await self.repo.get_user_by_email(email)
         if user_exists:
@@ -53,3 +53,24 @@ class Users:
         else:
             raise UserNotFound
 
+    async def token_check(
+            self,
+            token: str
+    ):
+        user_check = jwt.decode(token, config.app.secret_key, algorithms="HS256")
+        user = await self.repo.get_user_by_email(user_check.get('mail'))
+        if not user:
+            raise UserNotFound
+        else:
+            if user.password == user_check.get('password'):
+                return jwt.encode({
+                    "mail": user.mail,
+                    "name": user.name,
+                    "surname": user.surname,
+                    "phone": user.phone,
+                    "password": user.password,
+                    "role": user.role,
+                    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
+                }, config.app.secret_key, algorithm="HS256")
+            else:
+                raise PasswordIncorrect

@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from app.api.errors import USER_ALREADY_EXISTS, PASSWORD_INCORRECT, USER_NOT_FOUND
 from app.config import Config
 from app.dependencies.services import get_user_service
-from app.models.users import RegisterRequest, LoginRequest
+from app.models.users import RegisterRequest, LoginRequest, CheckRequest
 from app.services.users import Users
 from app.utils.exceptions import PasswordIncorrect, UserNotFound
 
@@ -51,23 +51,12 @@ async def login(
 )
 async def check_token(
         body: CheckRequest,
-        user_repo: UserRepository = Depends(get_repository(UserRepository))
+        user_service: Users = Depends(get_user_service)
 ):
-    if body != "":
-        user_check = jwt.decode(body.token, config.app.secret_key, algorithms="HS256")
-        user = await user_repo.get_user_by_email(user_check.get('mail'))
-        if not user:
-            return JSONResponse({"error": USER_NOT_FOUND}, status_code=404)
-        else:
-            if user.password == user_check.get('password'):
-                return JSONResponse({"access_token": jwt.encode({
-                    "mail": user.mail,
-                    "name": user.name,
-                    "surname": user.surname,
-                    "phone": user.phone,
-                    "password": user.password,
-                    "role": user.role,
-                    "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
-                }, config.app.secret_key, algorithm="HS256")})
-            else:
-                return JSONResponse({"error": PASSWORD_INCORRECT}, status_code=500)
+    try:
+        result = await user_service.token_check(body.token)
+        return JSONResponse({"access_token": result})
+    except UserNotFound:
+        return JSONResponse({"error": USER_NOT_FOUND}, status_code=404)
+    except PasswordIncorrect:
+        return JSONResponse({"error": PASSWORD_INCORRECT}, status_code=500)
