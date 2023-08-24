@@ -1,17 +1,21 @@
 {
   "app": {
-    "title": "targets-api",
+    "title": "ficha-backend",
     "version": "0.0.1",
     "description": "",
+    "host": "localhost",
+    "port": 8080,
     "allowed_hosts": ["*"],
     "api_prefix": "/api"
   },
   "db": {
-    "host": "db",
+    "host": "localhost",
     "port": 5432,
     "pool_min_size": 10,
     "pool_max_size": 10,
     "command_timeout": 60,
-    "migrations_path": "app/db/migrations"
+    "user": "user",
+    "database": "database",
+    "password": "password"
   }
 }
