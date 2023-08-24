@@ -8,3 +8,9 @@ class Wallet(BaseModel):
     score: int
     credit_rating: int
     bank: int
+
+
+class WalletCreateRequest(BaseModel):
+    bank: int
+    currency: str
+    email: str
