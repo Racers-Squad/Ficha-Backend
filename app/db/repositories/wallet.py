@@ -10,10 +10,11 @@ class WalletRepository(BaseRepository):
 
     async def insert_wallet(self, user_id: int, currency: int, score: int, status: int) -> int:
         args = (user_id, currency, score, status)
-        wallet_id = await self.fetch_one(
-            "INSERT INTO wallets(user_id, currency, score, status) VALUES ($1, $2, $3, $4) RETURNING id",
-            *args, serializer=Id)
-        return wallet_id
+        wallet = await self.fetch_one(
+            "INSERT INTO wallets(user_id, currency, score, status) VALUES ($1, $2, $3, $4) RETURNING *",
+            *args, serializer=Wallet)
+        print(wallet)
+        return wallet
 
     async def get_wallet_by_id(self, wallet_id: int) -> Wallet:
         wallet = await self.fetch_one(f"SELECT * FROM wallets WHERE id={wallet_id}", serializer=Wallet)

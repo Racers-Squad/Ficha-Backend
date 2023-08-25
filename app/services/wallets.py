@@ -25,8 +25,8 @@ class Wallets:
         user = await self.user_repo.get_user_by_email(email)
         if not user:
             raise UserNotFound
-        wallet_id = await self.repo.insert_wallet(user.id, currency, 0, 1)
-        return wallet_id
+        wallet = await self.repo.insert_wallet(user.id, currency, 0, 1)
+        return wallet
 
     async def fill_up_wallet(self, wallet_id: int, money_sum: int):
         wallet = await self.repo.get_wallet_by_id(wallet_id)
