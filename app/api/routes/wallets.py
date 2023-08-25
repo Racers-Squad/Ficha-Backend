@@ -1,40 +1,39 @@
 from fastapi import APIRouter, Depends
-from starlette.responses import JSONResponse
-
-from app.db.repositories.user import UserRepository
-from app.db.repositories.wallet import WalletRepository
-from app.dependencies.db import get_repository
+from fastapi.responses import JSONResponse
+from app.api.errors import USER_NOT_FOUND
+from app.dependencies.services import get_wallet_service
 from app.models.wallets import WalletCreateRequest
+from app.services.wallets import Wallets
+from app.utils.exceptions import UserNotFound
 
-router = APIRouter(prefix="/wallets")
+router = APIRouter(tags=["wallets"], prefix="/wallets")
 
 
 @router.get(
     path="/{email}",
-    description=""
+    description="Метод получения списка кошельков в email"
 )
 async def get_wallets(
         email: str,
-        user_repo: UserRepository = Depends(get_repository(UserRepository)),
-        wallets_repo: WalletRepository = Depends(get_repository(WalletRepository))
+        wallet_service: Wallets = Depends(get_wallet_service)
 ):
-    user = await user_repo.get_user_by_email(email)
-    wallets = await wallets_repo.get_wallets_by_user_id(user.id)
-    if not wallets:
-        return JSONResponse({})
-    else:
-        return wallets
+    try:
+        result = await wallet_service.get_wallets(email)
+        return result or JSONResponse({})
+    except UserNotFound:
+        return JSONResponse({"error": USER_NOT_FOUND}, status_code=404)
 
 
 @router.post(
     path="/add",
-    description=""
+    description="Метод добавления нового кошелька"
 )
-async def insert_wallets(
+async def create_wallet(
         body: WalletCreateRequest,
-        user_repo: UserRepository = Depends(get_repository(UserRepository)),
-        wallets_repo: WalletRepository = Depends(get_repository(WalletRepository))
+        wallet_service: Wallets = Depends(get_wallet_service)
 ):
-    user = await user_repo.get_user_by_email(body.email)
-    result = await wallets_repo.insert_wallet(user.user_id, body.currency, 0, 0, body.bank)
-    return JSONResponse({})
+    try:
+        result = await wallet_service.create_wallet(body.email, body.bank, body.currency)
+        return result
+    except UserNotFound:
+        return JSONResponse({"error": USER_NOT_FOUND}, status_code=404)

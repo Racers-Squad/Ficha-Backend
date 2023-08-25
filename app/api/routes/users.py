@@ -10,7 +10,7 @@ from app.utils.exceptions import PasswordIncorrect, UserNotFound
 
 config = Config()
 
-router = APIRouter(prefix="/users")
+router = APIRouter(tags=["users"], prefix="/users")
 
 
 @router.post(
@@ -30,7 +30,7 @@ async def register(
 
 @router.post(
     path="/login",
-    description="Логин"
+    description="Метод авторизации пользователя"
 )
 async def login(
         body: LoginRequest,

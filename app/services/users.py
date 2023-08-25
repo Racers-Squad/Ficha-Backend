@@ -3,9 +3,11 @@ from typing import Optional
 
 import jwt
 
+from app.config import Config
 from app.db.repositories.user import UserRepository
-from app.main import config
 from app.utils.exceptions import PasswordIncorrect, UserNotFound
+
+config = Config()
 
 
 class Users:
