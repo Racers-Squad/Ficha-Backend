@@ -5,5 +5,10 @@ class PasswordIncorrect(Exception):
 class UserNotFound(Exception):
     pass
 
+
 class BankNotFound(Exception):
+    pass
+
+
+class WalletNotFound(Exception):
     pass

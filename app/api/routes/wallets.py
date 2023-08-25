@@ -1,11 +1,13 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-from app.api.errors import USER_NOT_FOUND
+from app.api.errors import USER_NOT_FOUND, WALLET_NOT_FOUND
 from app.config import Config
 from app.dependencies.services import get_wallet_service
-from app.models.wallets import WalletCreateRequest
+from app.models.wallets import WalletCreateRequest, Wallet, FillUpRequest
 from app.services.wallets import Wallets
-from app.utils.exceptions import UserNotFound
+from app.utils.exceptions import UserNotFound, WalletNotFound
 
 config = Config()
 
@@ -14,7 +16,8 @@ router = APIRouter(tags=["wallets"], prefix="/wallets")
 
 @router.get(
     path="/{email}",
-    description="Метод получения списка кошельков в email"
+    description="Метод получения списка кошельков в email",
+    response_model=List[Wallet]
 )
 async def get_wallets(
         email: str,
@@ -36,7 +39,26 @@ async def create_wallet(
         wallet_service: Wallets = Depends(get_wallet_service)
 ):
     try:
-        result = await wallet_service.create_wallet(body.email, body.bank, body.currency)
+        result = await wallet_service.create_wallet(body.email, body.currency)
         return result
     except UserNotFound:
         return JSONResponse({"error": USER_NOT_FOUND}, status_code=404)
+
+
+@router.post(
+    path="/{wallet_id}/replenishment",
+    description="Метод пополнения кошелька"
+)
+async def fill_up_wallet(
+        wallet_id: int,
+        body: FillUpRequest,
+        wallet_service: Wallets = Depends(get_wallet_service)
+):
+    try:
+        result = await wallet_service.fill_up_wallet(wallet_id, body.money_sum)
+        if result:
+            return JSONResponse({})
+        else:
+            return JSONResponse({"error": "Кошелек не был пополнен"}, status_code=500)
+    except WalletNotFound:
+        return JSONResponse({"error": WALLET_NOT_FOUND}, status_code=404)

@@ -3,14 +3,17 @@ from pydantic import BaseModel
 
 class Wallet(BaseModel):
     user_id: int
-    card_id: int
-    currency: str
+    id: int
+    currency: int
     score: int
-    credit_rating: int
-    bank: int
+    status: int
 
 
 class WalletCreateRequest(BaseModel):
-    bank: int
-    currency: str
+    currency: int
     email: str
+
+
+class FillUpRequest(BaseModel):
+    money_sum: int
+    card_number: int
