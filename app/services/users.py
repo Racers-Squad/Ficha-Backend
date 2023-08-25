@@ -17,12 +17,12 @@ class Users:
 
     async def register(
             self,
-            mail: str, name: str, surname: str, phone: str, password: str, role: int
+            email: str, name: str, surname: str, phone: str, password: str, role: int
     ) -> Optional[str]:
-        user_exists = await self.repo.get_user_by_email(mail)
+        user_exists = await self.repo.get_user_by_email(email)
         if not user_exists:
             payload = {
-                "mail": mail,
+                "email": email,
                 "name": name,
                 "surname": surname,
                 "phone": phone,
@@ -31,7 +31,7 @@ class Users:
                 "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
             }
             token = jwt.encode(payload, config.app.secret_key, algorithm="HS256")
-            await self.repo.insert_user(name, surname, mail, password, phone, role)
+            await self.repo.insert_user(name, surname, email, password, phone, role)
             return token
         else:
             return None
@@ -44,7 +44,7 @@ class Users:
         if user_exists:
             if user_exists.password == password:
                 payload = {
-                    "mail": email,
+                    "email": email,
                     "password": password,
                     "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1),
                 }
@@ -60,13 +60,13 @@ class Users:
             token: str
     ):
         user_check = jwt.decode(token, config.app.secret_key, algorithms="HS256")
-        user = await self.repo.get_user_by_email(user_check.get('mail'))
+        user = await self.repo.get_user_by_email(user_check.get('email'))
         if not user:
             raise UserNotFound
         else:
             if user.password == user_check.get('password'):
                 return jwt.encode({
-                    "mail": user.mail,
+                    "email": user.email,
                     "name": user.name,
                     "surname": user.surname,
                     "phone": user.phone,

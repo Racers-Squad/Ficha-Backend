@@ -17,7 +17,6 @@ class RegisterRequest(BaseModel):
     surname: str
     phone: str
     password: str
-    role: int
 
 
 class LoginRequest(BaseModel):
