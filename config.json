@@ -20,5 +20,6 @@
     "user": "user",
     "database": "database",
     "password": "password"
-  }
+  },
+  "exchange_rate_url": "https://www.cbr-xml-daily.ru/daily_json.js"
 }

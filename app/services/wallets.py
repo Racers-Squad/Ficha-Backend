@@ -51,7 +51,7 @@ class Wallets:
             accept_currency = await self.currency_repo.get_currency_by_id(wallet2.currency)
 
             currency_info = json.loads(currency_list).get("Valute").get(accept_currency.short_name)
-            currency_course = round(currency_info.get("Value") / currency_info.get("Nominal"), 6)
+            currency_course = round(currency_info.get("Nominal") / currency_info.get("Value"), 6)
 
             await self.repo.change_wallet_score(wallet1.id, money_sum * -1)
             await self.repo.change_wallet_score(wallet2.id, money_sum * currency_course)
