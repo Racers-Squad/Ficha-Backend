@@ -1,10 +1,13 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from app.api.errors import USER_NOT_FOUND
+from app.config import Config
 from app.dependencies.services import get_wallet_service
 from app.models.wallets import WalletCreateRequest
 from app.services.wallets import Wallets
 from app.utils.exceptions import UserNotFound
+
+config = Config()
 
 router = APIRouter(tags=["wallets"], prefix="/wallets")
 

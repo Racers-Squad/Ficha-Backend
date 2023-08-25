@@ -21,7 +21,7 @@ async def register(
         body: RegisterRequest,
         user_service: Users = Depends(get_user_service)
 ):
-    result = await user_service.register(body.mail, body.name, body.surname, body.phone, body.password, body.role)
+    result = await user_service.register(body.mail, body.name, body.surname, body.phone, body.password, 0)
     if result:
         return JSONResponse({"access_token": result})
     else:
@@ -37,7 +37,7 @@ async def login(
         user_service: Users = Depends(get_user_service)
 ):
     try:
-        result = user_service.login(body.mail, body.password)
+        result = await user_service.login(body.mail, body.password)
         return JSONResponse({"access_token": result})
     except PasswordIncorrect:
         return JSONResponse({"error": PASSWORD_INCORRECT}, status_code=500)
