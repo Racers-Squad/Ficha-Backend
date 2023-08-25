@@ -18,8 +18,9 @@ def get_user_service(repo: UserRepository = Depends(get_repository(UserRepositor
 
 
 def get_wallet_service(repo: WalletRepository = Depends(get_repository(WalletRepository)),
-                       user_service: UserRepository = Depends(get_repository(UserRepository))):
-    return Wallets(repo, user_service)
+                       user_repo: UserRepository = Depends(get_repository(UserRepository)),
+                       currency_repo: CurrencyRepository = Depends(get_repository(CurrencyRepository))):
+    return Wallets(repo, user_repo, currency_repo)
 
 
 def get_bank_service(repo: BankRepository = Depends(get_repository(BankRepository))):

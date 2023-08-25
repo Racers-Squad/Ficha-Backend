@@ -16,3 +16,7 @@ class WalletNotFound(Exception):
 
 class CardAlreadyExists(Exception):
     pass
+
+
+class NotEnoughMoney(Exception):
+    pass
