@@ -12,3 +12,7 @@ class BankNotFound(Exception):
 
 class WalletNotFound(Exception):
     pass
+
+
+class CardAlreadyExists(Exception):
+    pass

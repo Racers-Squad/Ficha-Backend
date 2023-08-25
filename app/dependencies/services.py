@@ -1,11 +1,13 @@
 from fastapi import Depends
 
 from app.db.repositories.bank import BankRepository
+from app.db.repositories.cards import CardsRepository
 from app.db.repositories.currency import CurrencyRepository
 from app.db.repositories.user import UserRepository
 from app.db.repositories.wallet import WalletRepository
 from app.dependencies.db import get_repository
 from app.services.banks import Banks
+from app.services.cards import Cards
 from app.services.currencies import Currencies
 from app.services.users import Users
 from app.services.wallets import Wallets
@@ -26,3 +28,7 @@ def get_bank_service(repo: BankRepository = Depends(get_repository(BankRepositor
 
 def get_currency_service(repo: CurrencyRepository = Depends(get_repository(CurrencyRepository))):
     return Currencies(repo)
+
+
+def get_card_service(repo: CardsRepository = Depends(get_repository((CardsRepository)))):
+    return Cards(repo)
