@@ -1,5 +1,5 @@
 from app.db import BaseRepository
-from app.models.common import Id
+from app.models.common import Id, Score
 from app.models.wallets import Wallet
 
 
@@ -20,5 +20,5 @@ class WalletRepository(BaseRepository):
         return wallet
 
     async def change_wallet_score(self, wallet_id: int, money_sum: int):
-        prev_score = await self.fetch_one(f"SELECT score FROM wallets WHERE id={wallet_id}")
-        await self.fetch_one(f"UPDATE wallets SET score={prev_score + money_sum} WHERE id={wallet_id}")
+        prev_score = await self.fetch_one(f"SELECT score FROM wallets WHERE id={wallet_id}", serializer=Score)
+        await self.fetch_one(f"UPDATE wallets SET score={prev_score.score + money_sum} WHERE id={wallet_id}")
