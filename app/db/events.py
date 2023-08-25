@@ -9,9 +9,8 @@ from app.config import Config
 
 async def connect_to_db(app: FastAPI, config: Config) -> None:
     logger.info("Connecting to PostgreSQL")
-    dsn = get_dsn(config.db)
     app.state.db_pool = await asyncpg.create_pool(
-        dsn=dsn,
+        dsn=get_dsn(config.db),
         min_size=config.db.pool_min_size,
         max_size=config.db.pool_max_size,
     )
