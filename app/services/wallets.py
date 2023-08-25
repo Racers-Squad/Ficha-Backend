@@ -1,8 +1,10 @@
+import json
 from typing import List
 
 from app.db.repositories.user import UserRepository
 from app.db.repositories.wallet import WalletRepository
 from app.models.wallets import Wallet
+from app.utils.ExchangeRate import ExchangeRate
 from app.utils.exceptions import UserNotFound, WalletNotFound
 
 
@@ -33,3 +35,14 @@ class Wallets:
         else:
             await self.repo.change_wallet_score(wallet.id, money_sum)
             return True
+
+    async def change_money(self, wallet_id_1: int, wallet_id_2: int, money_sum: int):
+        wallet1 = await self.repo.get_wallet_by_id(wallet_id_1)
+        wallet2 = await self.repo.get_wallet_by_id(wallet_id_2)
+
+        if not any((wallet1, wallet2)):
+            raise WalletNotFound
+        else:
+            result = await ExchangeRate.fetch_exchange_rate()
+            result = json.loads(result)
+            return result

@@ -17,3 +17,9 @@ class WalletCreateRequest(BaseModel):
 class FillUpRequest(BaseModel):
     money_sum: int
     card_number: int
+
+
+class ChangeRequest(BaseModel):
+    wallet_id_1: int
+    wallet_id_2: int
+    money_sum: int
