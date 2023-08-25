@@ -11,7 +11,7 @@ router = APIRouter(tags=["banks"], prefix="/banks")
 
 # TODO Фильтры
 @router.get(
-    path="/",
+    path="/all",
     description="Метод получения списка всех банков",
     response_model=List[Bank]
 )
