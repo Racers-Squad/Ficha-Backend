@@ -38,7 +38,7 @@ class Wallets:
             await self.repo.change_wallet_score(wallet.id, money_sum)
             return True
 
-    async def change_money(self, sender_wallet_id: int, accept_wallet_id: int, money_sum: int):
+    async def change_money(self, sender_wallet_id: int, accept_wallet_id: int, money_sum: int) -> List[Wallet]:
         wallet1 = await self.repo.get_wallet_by_id(sender_wallet_id)
         wallet2 = await self.repo.get_wallet_by_id(accept_wallet_id)
 
@@ -53,5 +53,6 @@ class Wallets:
             currency_info = json.loads(currency_list).get("Valute").get(accept_currency.short_name)
             currency_course = round(currency_info.get("Nominal") / currency_info.get("Value"), 6)
 
-            await self.repo.change_wallet_score(wallet1.id, money_sum * -1)
-            await self.repo.change_wallet_score(wallet2.id, money_sum * currency_course)
+            wallet1 = await self.repo.change_wallet_score(wallet1.id, money_sum * -1)
+            wallet2 = await self.repo.change_wallet_score(wallet2.id, money_sum * currency_course)
+        return [wallet1, wallet2]

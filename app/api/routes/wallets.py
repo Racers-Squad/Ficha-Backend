@@ -66,14 +66,15 @@ async def fill_up_wallet(
 
 @router.post(
     path="/change",
-    description="Метод для обмена валют между кошельками"
+    description="Метод для обмена валют между кошельками",
+    response_model=List[Wallet]
 )
 async def change_money(
         body: ChangeRequest,
         wallet_service: Wallets = Depends(get_wallet_service)
 ):
     try:
-        await wallet_service.change_money(body.sender_wallet_id, body.accept_wallet_id, body.money_sum)
-        return JSONResponse({})
+        wallets = await wallet_service.change_money(body.sender_wallet_id, body.accept_wallet_id, body.money_sum)
+        return wallets
     except WalletNotFound:
         return JSONResponse({"error": WALLET_NOT_FOUND}, status_code=404)

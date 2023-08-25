@@ -20,6 +20,8 @@ class WalletRepository(BaseRepository):
         wallet = await self.fetch_one(f"SELECT * FROM wallets WHERE id={wallet_id}", serializer=Wallet)
         return wallet
 
-    async def change_wallet_score(self, wallet_id: int, money_sum: int):
+    async def change_wallet_score(self, wallet_id: int, money_sum: int) -> Wallet:
         prev_score = await self.fetch_one(f"SELECT score FROM wallets WHERE id={wallet_id}", serializer=Score)
-        await self.fetch_one(f"UPDATE wallets SET score={prev_score.score + money_sum} WHERE id={wallet_id}")
+        result = await self.fetch_one(f"UPDATE wallets SET score={prev_score.score + money_sum}"
+                             f" WHERE id={wallet_id} RETURNING *", serializer=Wallet)
+        return result
