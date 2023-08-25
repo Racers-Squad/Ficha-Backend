@@ -73,7 +73,7 @@ async def change_money(
         wallet_service: Wallets = Depends(get_wallet_service)
 ):
     try:
-        await wallet_service.change_money(body.wallet_id_1, body.wallet_id_2, body.money_sum)
+        await wallet_service.change_money(body.sender_wallet_id, body.accept_wallet_id, body.money_sum)
         return JSONResponse({})
     except WalletNotFound:
         return JSONResponse({"error": WALLET_NOT_FOUND}, status_code=404)

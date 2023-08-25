@@ -20,6 +20,6 @@ class FillUpRequest(BaseModel):
 
 
 class ChangeRequest(BaseModel):
-    wallet_id_1: int
-    wallet_id_2: int
+    sender_wallet_id: int
+    accept_wallet_id: int
     money_sum: int

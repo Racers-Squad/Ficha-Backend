@@ -38,9 +38,9 @@ class Wallets:
             await self.repo.change_wallet_score(wallet.id, money_sum)
             return True
 
-    async def change_money(self, wallet_id_1: int, wallet_id_2: int, money_sum: int):
-        wallet1 = await self.repo.get_wallet_by_id(wallet_id_1)
-        wallet2 = await self.repo.get_wallet_by_id(wallet_id_2)
+    async def change_money(self, sender_wallet_id: int, accept_wallet_id: int, money_sum: int):
+        wallet1 = await self.repo.get_wallet_by_id(sender_wallet_id)
+        wallet2 = await self.repo.get_wallet_by_id(accept_wallet_id)
 
         if not any((wallet1, wallet2)):
             raise WalletNotFound
