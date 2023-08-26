@@ -19,6 +19,7 @@ class Banks:
             return result
         else:
             result = await self.repo.get_banks_by_currency(currency_id)
+            print(result)
             return result
 
     async def get_bank_currencies(self, bank_id: int):

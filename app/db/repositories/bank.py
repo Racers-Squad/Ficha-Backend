@@ -21,6 +21,7 @@ class BankRepository(BaseRepository):
         return result
 
     async def get_banks_by_currency(self, currency_id: int) -> List[Bank]:
-        result = await self.fetch_rows(f"SELECT * FROM banks b JOIN bank_currency_match bc ON bc.bank_id=b.id"
+        result = await self.fetch_rows(f"SELECT * FROM banks b JOIN bank_currency_match bc ON bc.bank_id=b.id "
                                        f"WHERE bc.currency_id={currency_id}", serializer=Bank)
+        print(result)
         return result
