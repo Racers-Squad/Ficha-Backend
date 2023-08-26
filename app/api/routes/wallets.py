@@ -33,7 +33,6 @@ async def get_wallets(
         return result or JSONResponse({})
     except UserNotFound:
         logger.error(f"Method get_wallets except {USER_NOT_FOUND}")
-        logger.info("Finish method get_wallets")
         return JSONResponse({"error": USER_NOT_FOUND}, status_code=404)
 
 
@@ -49,10 +48,10 @@ async def create_wallet(
     try:
         result = await wallet_service.create_wallet(body.email, body.currency)
         logger.info("Method create_wallet return " + result)
-        logger.info("Finish method get_wallets")
+        logger.info("Finish method create_wallet")
         return result
     except UserNotFound:
-        logger.error(f"Method get_wallets except {USER_NOT_FOUND}")
+        logger.error(f"Method create_wallet except {USER_NOT_FOUND}")
         return JSONResponse({"error": USER_NOT_FOUND}, status_code=404)
 
 
@@ -98,6 +97,7 @@ async def change_money(
         logger.error(f"Method change_money except {WALLET_NOT_FOUND}")
         return JSONResponse({"error": WALLET_NOT_FOUND}, status_code=404)
     except NotEnoughMoney:
+        logger.error(f"Method change_money except {NOT_ENOUGH_MONEY}")
         return JSONResponse({"error": NOT_ENOUGH_MONEY}, status_code=500)
 
 
@@ -110,14 +110,20 @@ async def withdraw_to_card(
         body: WithdrawRequest,
         wallet_service: Wallets = Depends(get_wallet_service)
 ):
+    logger.info("Start method withdraw_to_card")
     try:
         result = await wallet_service.withdraw_to_card(wallet_id, body.card_number, body.money_sum)
+        logger.info("Method withdraw_to_card return " + result)
+        logger.info("Finish method withdraw_to_card")
         return result
     except WalletNotFound:
+        logger.error(f"Method withdraw_to_card except {WALLET_NOT_FOUND}")
         return JSONResponse({"error": WALLET_NOT_FOUND}, status_code=404)
     except CardNotFound:
+        logger.error(f"Method withdraw_to_card except {CARD_NOT_FOUND}")
         return JSONResponse({"error": CARD_NOT_FOUND}, status_code=404)
     except NotEnoughMoney:
+        logger.error(f"Method withdraw_to_card except {NOT_ENOUGH_MONEY}")
         return JSONResponse({"error": NOT_ENOUGH_MONEY}, status_code=500)
 
 
@@ -130,8 +136,12 @@ async def get_wallet_history(
         wallet_id: int,
         wallet_service: Wallets = Depends(get_wallet_service)
 ):
+    logger.info("Start method get_wallet_history")
     try:
         result = await wallet_service.get_wallet_history(wallet_id)
+        logger.info("Method get_wallet_history return " + result)
+        logger.info("Finish method get_wallet_history")
         return result
     except WalletNotFound:
+        logger.error(f"Method get_wallet_history except {WALLET_NOT_FOUND}")
         return JSONResponse({"error": WALLET_NOT_FOUND}, status_code=404)

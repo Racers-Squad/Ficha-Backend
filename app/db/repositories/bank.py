@@ -1,8 +1,10 @@
 from typing import List
 
 from app.db import BaseRepository
-from app.models.banks import Bank, Currency
+from app.models.banks import Bank
 from loguru import logger
+
+from app.models.currencies import Currency
 
 
 class BankRepository(BaseRepository):

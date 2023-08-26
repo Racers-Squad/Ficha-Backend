@@ -57,7 +57,7 @@ async def get_bank_currencies(
         bank_id: int,
         bank_service: Banks = Depends(get_bank_service)
 ):
-    logger.info("Start method get_bank_by_id")
+    logger.info("Start method get_bank_currencies")
     try:
         result = await bank_service.get_bank_currencies(bank_id)
         logger.info("Method get_bank_currencies return " + result)
