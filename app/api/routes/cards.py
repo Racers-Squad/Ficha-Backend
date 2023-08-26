@@ -1,10 +1,11 @@
+from typing import List
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from app.api.errors import  USER_NOT_FOUND, WALLET_NOT_FOUND, BANK_NOT_FOUND
+from app.api.errors import USER_NOT_FOUND, WALLET_NOT_FOUND, BANK_NOT_FOUND
 from app.dependencies.services import get_card_service
-from app.models.cards import CreateCardRequest
+from app.models.cards import CreateCardRequest, Card
 from app.services.cards import Cards
 from app.utils.exceptions import UserNotFound, WalletNotFound, BankNotFound
 
@@ -30,3 +31,16 @@ async def add_card(
     except BankNotFound:
         return JSONResponse({"error": BANK_NOT_FOUND}, status_code=404)
 
+@router.get(
+    path="/{email}",
+    description="Метод получения всех карточек по имени пользователя",
+    response_model=List[Card]
+)
+async def get_card_by_user(
+        email: str,
+        card_service: Cards = Depends(get_card_service)
+):
+    try:
+        result = await card_service.get_cards_by_user(email)
+    except UserNotFound:
+        return JSONResponse({"error": USER_NOT_FOUND}, status_code=404)

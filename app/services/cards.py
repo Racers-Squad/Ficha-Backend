@@ -30,3 +30,10 @@ class Cards:
         result = await self.repo.insert_card(wallet.id, user.id, card_number,
                                              datetime.datetime.utcnow() + datetime.timedelta(weeks=52*4), 0, bank.id)
         return result
+
+    async def get_cards_by_user(self, email: str):
+        user = await self.user_repo.get_user_by_email(email)
+        if not user:
+            raise UserNotFound
+        result = await self.repo.get_cards_by_user_id(user.id)
+        return result

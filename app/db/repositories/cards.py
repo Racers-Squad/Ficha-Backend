@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from app.db import BaseRepository
 from app.models.common import Id, Score
@@ -21,3 +22,7 @@ class CardsRepository(BaseRepository):
         card_score = await self.fetch_one(
             f"SELECT score FROM cards WHERE card_number ={card_number}", serializer=Score)
         return card_score
+
+    async def get_cards_by_user_id(self, user_id: int) -> List[Card]:
+        cards = await self.fetch_rows(f"SELECT * FROM cards WHERE user_id={user_id}", serializer=Card)
+        return cards

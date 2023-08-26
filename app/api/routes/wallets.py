@@ -78,3 +78,4 @@ async def change_money(
         return wallets
     except WalletNotFound:
         return JSONResponse({"error": WALLET_NOT_FOUND}, status_code=404)
+
