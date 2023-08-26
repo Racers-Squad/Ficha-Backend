@@ -26,7 +26,7 @@ class Cards:
         wallet = await self.wallet_repo.get_wallet_by_id(wallet_id)
         if not wallet:
             raise WalletNotFound
-        card_number = int(str(random.randint(1, 5)) + ''.join(str(random.randint(0, 9)) for _ in range(14)))
+        card_number = str(random.randint(1, 5)) + ''.join(str(random.randint(0, 9)) for _ in range(14))
         result = await self.repo.insert_card(wallet.id, user.id, card_number,
                                              datetime.datetime.utcnow() + datetime.timedelta(weeks=52*4), 0, bank.id)
         return result

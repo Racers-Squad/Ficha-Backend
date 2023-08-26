@@ -8,7 +8,7 @@ from app.models.cards import Card
 class CardsRepository(BaseRepository):
 
     async def insert_card(self, wallet_id: int, user_id: int,
-                          card_number: int, expiration_time: datetime, score: int, bank_id: int) -> Card:
+                          card_number: str, expiration_time: datetime, score: int, bank_id: int) -> Card:
         args = (wallet_id, user_id, card_number, expiration_time, score, bank_id)
         card = await self.fetch_one(
             "INSERT INTO cards(wallet_id, user_id, card_number, expiration_time, score, bank_id)"
