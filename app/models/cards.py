@@ -1,3 +1,4 @@
+import datetime
 from datetime import timezone
 
 from pydantic import BaseModel
@@ -13,6 +14,6 @@ class Card(BaseModel):
     wallet_id: int
     user_id: int
     card_number: int
-    expiration_time: timezone
+    expiration_time: datetime
     score: int
     bank_id: int

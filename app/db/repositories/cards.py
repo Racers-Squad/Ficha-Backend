@@ -3,7 +3,6 @@ from datetime import datetime
 from app.db import BaseRepository
 from app.models.common import Id, Score
 from app.models.cards import Card
-from app.models.common import Id
 
 
 class CardsRepository(BaseRepository):
