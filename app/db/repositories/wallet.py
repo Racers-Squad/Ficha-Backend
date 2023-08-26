@@ -13,7 +13,6 @@ class WalletRepository(BaseRepository):
         wallet = await self.fetch_one(
             "INSERT INTO wallets(user_id, currency, score, status) VALUES ($1, $2, $3, $4) RETURNING *",
             *args, serializer=Wallet)
-        print(wallet)
         return wallet
 
     async def get_wallet_by_id(self, wallet_id: int) -> Wallet:
@@ -25,3 +24,9 @@ class WalletRepository(BaseRepository):
         result = await self.fetch_one(f"UPDATE wallets SET score={prev_score.score + money_sum}"
                              f" WHERE id={wallet_id} RETURNING *", serializer=Wallet)
         return result
+
+    async def get_wallet_score(self,
+                             wallet_id: int) -> int:
+        wallet_score = await self.fetch_one(
+            f"SELECT score FROM wallets WHERE id ={wallet_id}", serializer=Score)
+        return wallet_score

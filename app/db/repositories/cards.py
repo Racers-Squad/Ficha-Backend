@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from app.db import BaseRepository
+from app.models.common import Id, Score
 from app.models.cards import Card
 from app.models.common import Id
 
@@ -15,3 +16,9 @@ class CardsRepository(BaseRepository):
             " VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
             *args, serializer=Card)
         return card
+
+    async def get_card_score(self,
+                             card_number: int) -> int:
+        card_score = await self.fetch_one(
+            f"SELECT score FROM cards WHERE card_number ={card_number}", serializer=Score)
+        return card_score
