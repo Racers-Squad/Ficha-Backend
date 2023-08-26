@@ -43,5 +43,6 @@ async def get_card_by_user(
 ):
     try:
         result = await card_service.get_cards_by_user(email)
+        return  result
     except UserNotFound:
         return JSONResponse({"error": USER_NOT_FOUND}, status_code=404)

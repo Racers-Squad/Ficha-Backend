@@ -41,8 +41,9 @@ class Wallets:
             raise WalletNotFound
         else:
             start_meaning = await self.repo.get_wallet_score(wallet_id)
-            await self.history_repo.add_operation(wallet_id, start_meaning, money_sum, TypeOperation.REPLENISHMENT,
-                                                  start_meaning + money_sum)
+            await self.history_repo.add_operation(wallet_id, start_meaning.score, money_sum,
+                                                  TypeOperation.REPLENISHMENT,
+                                                  start_meaning.score + money_sum)
             await self.repo.change_wallet_score(wallet.id, money_sum)
             return True
 

@@ -34,5 +34,5 @@ class CardRepository(BaseRepository):
     async def change_card_balance_by_card_number(self, card_number: str, money_sum: int):
         prev_score = await self.fetch_one(f"SELECT score FROM cards WHERE card_number='{card_number}'", serializer=Score)
         card = await self.fetch_one(f"UPDATE cards SET score={prev_score.score + money_sum} "
-                                    f"WHERE card_number='{card_number}'", serializer=Card)
+                                    f"WHERE card_number='{card_number}' returning *", serializer=Card)
         return card
