@@ -7,7 +7,3 @@ class Bank(BaseModel):
     country: str
 
 
-class Currency(BaseModel):
-    id: int
-    name: str
-    short_name: str

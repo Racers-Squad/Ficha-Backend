@@ -1,8 +1,7 @@
 from typing import List
 
 from app.db import BaseRepository
-from app.models.banks import Currency
-from app.models.common import Id
+from app.models.currencies import Currency
 
 
 class CurrencyRepository(BaseRepository):
