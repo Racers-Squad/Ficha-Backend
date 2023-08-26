@@ -96,10 +96,16 @@ class Wallets:
         card = await self.card_repo.change_card_balance_by_card_number(card_number, money_sum)
         return [wallet, card]
 
-    async def get_wallet_history(self, wallet_id: int):
-        wallet = await self.repo.get_wallet_by_id(wallet_id)
-        if not wallet:
-            raise WalletNotFound
+    async def get_wallets_history(self, email: str):
+        result = []
+        user = await self.user_repo.get_user_by_email(email)
+        if not user:
+            raise UserNotFound
 
-        result = await self.history_repo.get_history_by_wallet_id(wallet.id)
+        wallets = await self.repo.get_wallets_by_user_id(user.id)
+        if not wallets:
+            raise WalletNotFound
+        for wallet in wallets:
+            history = await self.history_repo.get_history_by_wallet_id(wallet.id)
+            result.append(history)
         return result
