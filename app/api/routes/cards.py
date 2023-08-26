@@ -1,13 +1,12 @@
-from typing import List
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from app.api.errors import CARD_ALREADY_EXISTS
+from app.api.errors import  USER_NOT_FOUND, WALLET_NOT_FOUND, BANK_NOT_FOUND
 from app.dependencies.services import get_card_service
 from app.models.cards import CreateCardRequest
 from app.services.cards import Cards
-from app.utils.exceptions import CardAlreadyExists
+from app.utils.exceptions import UserNotFound, WalletNotFound, BankNotFound
 
 router = APIRouter(tags=["cards"], prefix="/cards")
 
@@ -22,8 +21,12 @@ async def add_card(
         card_service: Cards = Depends(get_card_service)
 ):
     try:
-        result = await card_service.insert_card(body.id, body.wallet_id, body.card_number, body.user_id,
-                                                body.expiration_time)
+        result = await card_service.insert_card(email, body.wallet_id, body.bank_id)
         return result
-    except CardAlreadyExists:
-        return JSONResponse({"error": CARD_ALREADY_EXISTS}, status_code=500)
+    except UserNotFound:
+        return JSONResponse({"error": USER_NOT_FOUND}, status_code=404)
+    except WalletNotFound:
+        return JSONResponse({"error": WALLET_NOT_FOUND}, status_code=404)
+    except BankNotFound:
+        return JSONResponse({"error": BANK_NOT_FOUND}, status_code=404)
+

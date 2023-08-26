@@ -31,5 +31,8 @@ def get_currency_service(repo: CurrencyRepository = Depends(get_repository(Curre
     return Currencies(repo)
 
 
-def get_card_service(repo: CardsRepository = Depends(get_repository(CardsRepository))):
-    return Cards(repo)
+def get_card_service(repo: CardsRepository = Depends(get_repository(CardsRepository)),
+                     user_repo: UserRepository = Depends(get_repository(UserRepository)),
+                     bank_repo: BankRepository = Depends(get_repository(BankRepository)),
+                     wallet_repo: WalletRepository = Depends(get_repository(WalletRepository))):
+    return Cards(repo, user_repo, bank_repo, wallet_repo)
