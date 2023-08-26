@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from app.api.errors import USER_NOT_FOUND, WALLET_NOT_FOUND, CARD_NOT_FOUND, NOT_ENOUGH_MONEY
 from app.config import Config
 from app.dependencies.services import get_wallet_service
-from app.models.wallets import WalletCreateRequest, Wallet, FillUpRequest, ChangeRequest, WithdrawRequest
+from app.models.wallets import WalletCreateRequest, Wallet, FillUpRequest, ChangeRequest, WithdrawRequest, History
 from app.services.wallets import Wallets
 from app.utils.exceptions import UserNotFound, WalletNotFound
 from loguru import logger
@@ -119,3 +119,19 @@ async def withdraw_to_card(
         return JSONResponse({"error": CARD_NOT_FOUND}, status_code=404)
     except NotEnoughMoney:
         return JSONResponse({"error": NOT_ENOUGH_MONEY}, status_code=500)
+
+
+@router.get(
+    path="/{wallet_id}/history",
+    description="Метод получения истории кошелька",
+    response_model=List[History]
+)
+async def get_wallet_history(
+        wallet_id: int,
+        wallet_service: Wallets = Depends(get_wallet_service)
+):
+    try:
+        result = await wallet_service.get_wallet_history(wallet_id)
+        return result
+    except WalletNotFound:
+        return JSONResponse({"error": WALLET_NOT_FOUND}, status_code=404)

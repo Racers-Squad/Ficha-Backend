@@ -28,3 +28,8 @@ class ChangeRequest(BaseModel):
 class WithdrawRequest(BaseModel):
     card_number: str
     money_sum: int
+
+
+class History(BaseModel):
+    value: int
+    type_operation: int
