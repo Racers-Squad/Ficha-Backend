@@ -28,8 +28,8 @@ async def get_wallets(
     logger.info("Start method get_wallets")
     try:
         result = await wallet_service.get_wallets(email)
-        logger.info("Method get_wallets return " + result)
         logger.info("Finish method get_wallets")
+        print(result)
         return result or JSONResponse({})
     except UserNotFound:
         logger.error(f"Method get_wallets except {USER_NOT_FOUND}")

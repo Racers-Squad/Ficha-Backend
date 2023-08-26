@@ -20,7 +20,7 @@ async def get_currencies(
 ):
     logger.info("Start method get_currencies")
     result = await currency_service.get_currencies()
-    logger.info("Method get_currencies return " + result)
+    logger.info("Method get_currencies return")
     logger.info("Finish method get_currencies")
     return result
 
@@ -33,5 +33,5 @@ async def get_currencies(
 async def get_courses(
         currency_service: Currencies = Depends(get_currency_service)
 ):
-    result = await Currencies.get_currencies_courses()
+    result = await currency_service.get_currencies_courses()
     return result

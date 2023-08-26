@@ -53,7 +53,6 @@ async def get_card_by_user(
     logger.info("Start method get_card_by_user")
     try:
         result = await card_service.get_cards_by_user(email)
-        logger.info("Method get_card_by_user return " + result)
         return result
     except UserNotFound:
         logger.error(f"Method get_card_by_user except {USER_NOT_FOUND}")
