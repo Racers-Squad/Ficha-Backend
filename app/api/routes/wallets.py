@@ -103,16 +103,16 @@ async def withdraw_to_card(
 
 
 @router.get(
-    path="/{wallet_id}/history",
-    description="Метод получения истории кошелька",
-    response_model=List[History]
+    path="/{email}",
+    description="Метод получения истории кошельков",
+    response_model=List[List[History]]
 )
 async def get_wallet_history(
-        wallet_id: int,
+        email: str,
         wallet_service: Wallets = Depends(get_wallet_service)
 ):
     try:
-        result = await wallet_service.get_wallet_history(wallet_id)
+        result = await wallet_service.get_wallets_history(email)
         return result
     except WalletNotFound:
         return JSONResponse({"error": WALLET_NOT_FOUND}, status_code=404)
