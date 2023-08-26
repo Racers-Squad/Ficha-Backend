@@ -10,6 +10,8 @@ from app.models.wallets import Wallet
 from app.utils.ExchangeRate import ExchangeRate
 from app.utils.TypeOperation import TypeOperation
 from app.utils.exceptions import UserNotFound, WalletNotFound, NotEnoughMoney, CardNotFound
+
+
 class Wallets:
 
     def __init__(self, repo, user_repo, currency_repo, history_repo, card_repo):
@@ -39,7 +41,8 @@ class Wallets:
             raise WalletNotFound
         else:
             start_meaning = await self.repo.get_wallet_score(wallet_id)
-            await self.history_repo.add_operation(wallet_id, start_meaning, money_sum, TypeOperation.REPLENISHMENT, start_meaning + money_sum)
+            await self.history_repo.add_operation(wallet_id, start_meaning, money_sum, TypeOperation.REPLENISHMENT,
+                                                  start_meaning + money_sum)
             await self.repo.change_wallet_score(wallet.id, money_sum)
             return True
 
@@ -88,3 +91,10 @@ class Wallets:
         card = await self.card_repo.change_card_balance_by_card_number(card_number, money_sum)
         return [wallet, card]
 
+    async def get_wallet_history(self, wallet_id: int):
+        wallet = await self.repo.get_wallet_by_id(wallet_id)
+        if not wallet:
+            raise WalletNotFound
+
+        result = await self.history_repo.get_history_by_wallet_id(wallet.id)
+        return result

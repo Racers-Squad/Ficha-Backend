@@ -31,6 +31,7 @@ async def add_card(
     except BankNotFound:
         return JSONResponse({"error": BANK_NOT_FOUND}, status_code=404)
 
+
 @router.get(
     path="/{email}",
     description="Метод получения всех карточек по имени пользователя",
