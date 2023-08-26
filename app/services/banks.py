@@ -1,3 +1,5 @@
+from typing import Optional
+
 from app.db.repositories.bank import BankRepository
 from app.utils.exceptions import BankNotFound
 
@@ -11,9 +13,13 @@ class Banks:
         result = await self.repo.get_bank_by_id(bank_id)
         return result
 
-    async def get_banks(self):
-        result = await self.repo.get_banks()
-        return result
+    async def get_banks(self, currency_id: Optional[int]):
+        if not currency_id:
+            result = await self.repo.get_banks()
+            return result
+        else:
+            result = await self.repo.get_banks_by_currency(currency_id)
+            return result
 
     async def get_bank_currencies(self, bank_id: int):
         bank = await self.repo.get_bank_by_id(bank_id)
@@ -21,3 +27,4 @@ class Banks:
             raise BankNotFound
         else:
             results = await self.repo.get_bank_currencies(bank.id)
+            return results

@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import JSONResponse
 
 from app.api.errors import BANK_NOT_FOUND
@@ -12,16 +12,16 @@ from app.utils.exceptions import BankNotFound
 router = APIRouter(tags=["banks"], prefix="/banks")
 
 
-# TODO Фильтры
 @router.get(
     path="/all",
     description="Метод получения списка всех банков",
     response_model=List[Bank]
 )
 async def get_banks(
+        currency_id: Optional[int] = Query(default=None),
         banks_service: Banks = Depends(get_bank_service)
 ):
-    result = await banks_service.get_banks()
+    result = await banks_service.get_banks(currency_id)
     return result or JSONResponse({})
 
 
