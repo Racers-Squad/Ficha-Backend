@@ -9,6 +9,10 @@ from app.db.repositories.wallet import WalletRepository
 from app.models.wallets import Wallet
 from app.utils.ExchangeRate import ExchangeRate
 from app.utils.TypeOperation import TypeOperation
+from app.utils.exceptions import UserNotFound, WalletNotFound, NotEnoughMoney
+from loguru import logger
+
+
 from app.utils.exceptions import UserNotFound, WalletNotFound, NotEnoughMoney, CardNotFound
 
 
