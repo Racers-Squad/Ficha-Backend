@@ -1,6 +1,6 @@
 -- initial-tables
 -- depends: 
-CREATE TABLE "USERS" (
+CREATE TABLE "users" (
 	"id" serial UNIQUE,
 	"name" VARCHAR(255),
 	"surname" VARCHAR(255),
@@ -8,38 +8,38 @@ CREATE TABLE "USERS" (
 	"password" VARCHAR(255),
 	"phone" VARCHAR(255),
 	"role" integer,
-	CONSTRAINT "USERS_pk" PRIMARY KEY ("id")
+	CONSTRAINT "users_pk" PRIMARY KEY ("id")
 );
 
 
 
-CREATE TABLE "WALLETS" (
+CREATE TABLE "wallets" (
 	"user_id" integer,
 	"card_id" serial UNIQUE,
 	"currency" VARCHAR(255),
 	"score" integer,
 	"credit_rating" integer,
 	"bank" integer,
-	CONSTRAINT "WALLETS_pk" PRIMARY KEY ("card_id")
+	CONSTRAINT "wallets_pk" PRIMARY KEY ("card_id")
 ) WITH (
   OIDS=FALSE
 );
 
 
 
-CREATE TABLE "HISTORYOPERATIONS" (
+CREATE TABLE "history_operations" (
 	"id" serial UNIQUE,
 	"card_id" integer,
 	"start_meaning" FLOAT,
 	"operating" FLOAT,
 	"type_operation" integer,
 	"finish_meaning" FLOAT,
-	CONSTRAINT "HISTORYOPERATIONS_pk" PRIMARY KEY ("id")
+	CONSTRAINT "history_operations_pk" PRIMARY KEY ("id")
 );
 
 
 
-CREATE TABLE "BANKS" (
+CREATE TABLE "banks" (
 	"id" serial UNIQUE,
 	"bank" VARCHAR(255) UNIQUE,
 	CONSTRAINT "BANKS_pk" PRIMARY KEY ("id")
@@ -47,17 +47,17 @@ CREATE TABLE "BANKS" (
 
 
 
-CREATE TABLE "TYPEOPERATIONENUM" (
+CREATE TABLE "type_operation" (
 	"id" serial UNIQUE,
 	"operating" VARCHAR(255) UNIQUE,
-	CONSTRAINT "TYPEOPERATIONENUM_pk" PRIMARY KEY ("id")
+	CONSTRAINT "type_operation_pk" PRIMARY KEY ("id")
 );
 
 
 
 
-ALTER TABLE "WALLETS" ADD CONSTRAINT "WALLETS_fk0" FOREIGN KEY ("user_id") REFERENCES "USERS"("id");
-ALTER TABLE "WALLETS" ADD CONSTRAINT "WALLETS_fk1" FOREIGN KEY ("bank") REFERENCES "BANKS"("id");
+ALTER TABLE "wallets" ADD CONSTRAINT "wallets_fk0" FOREIGN KEY ("user_id") REFERENCES "users"("id");
+ALTER TABLE "wallets" ADD CONSTRAINT "wallets_fk1" FOREIGN KEY ("bank") REFERENCES "banks"("id");
 
-ALTER TABLE "HISTORYOPERATIONS" ADD CONSTRAINT "HISTORYOPERATIONS_fk0" FOREIGN KEY ("card_id") REFERENCES "WALLETS"("card_id");
-ALTER TABLE "HISTORYOPERATIONS" ADD CONSTRAINT "HISTORYOPERATIONS_fk1" FOREIGN KEY ("type_operation") REFERENCES "TYPEOPERATIONENUM"("id");
+ALTER TABLE "history_operations" ADD CONSTRAINT "history_operations_fk0" FOREIGN KEY ("card_id") REFERENCES "wallets"("card_id");
+ALTER TABLE "history_operations" ADD CONSTRAINT "history_operations_fk1" FOREIGN KEY ("type_operation") REFERENCES "type_operation"("id");

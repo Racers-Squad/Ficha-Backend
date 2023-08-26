@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends
 
 from app.dependencies.services import get_currency_service
-from app.models.banks import Currency
+from app.models.currencies import Course, Currency
 from app.services.currencies import Currencies
 from loguru import logger
 
@@ -22,4 +22,16 @@ async def get_currencies(
     result = await currency_service.get_currencies()
     logger.info("Method get_currencies return " + result)
     logger.info("Finish method get_currencies")
+    return result
+
+
+@router.get(
+    path="/courses",
+    description="Метод получения курсов валют",
+    response_model=List[Course]
+)
+async def get_courses(
+        currency_service: Currencies = Depends(get_currency_service)
+):
+    result = await Currencies.get_currencies_courses()
     return result

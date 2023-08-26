@@ -5,7 +5,8 @@ from fastapi.responses import JSONResponse
 
 from app.api.errors import BANK_NOT_FOUND
 from app.dependencies.services import get_bank_service
-from app.models.banks import Bank, Currency
+from app.models.banks import Bank
+from app.models.currencies import Currency
 from app.services.banks import Banks
 from app.utils.exceptions import BankNotFound
 from loguru import logger
