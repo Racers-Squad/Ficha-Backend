@@ -1,6 +1,7 @@
 import json
 from typing import List
 
+from app.db.repositories.cards import CardRepository
 from app.db.repositories.currency import CurrencyRepository
 from app.db.repositories.history import HistoryRepository
 from app.db.repositories.user import UserRepository
@@ -8,16 +9,15 @@ from app.db.repositories.wallet import WalletRepository
 from app.models.wallets import Wallet
 from app.utils.ExchangeRate import ExchangeRate
 from app.utils.TypeOperation import TypeOperation
-from app.utils.exceptions import UserNotFound, WalletNotFound, NotEnoughMoney
-
-
+from app.utils.exceptions import UserNotFound, WalletNotFound, NotEnoughMoney, CardNotFound
 class Wallets:
 
-    def __init__(self, repo, user_repo, currency_repo, history_repo):
+    def __init__(self, repo, user_repo, currency_repo, history_repo, card_repo):
         self.repo: WalletRepository = repo
         self.user_repo: UserRepository = user_repo
         self.currency_repo: CurrencyRepository = currency_repo
         self.history_repo: HistoryRepository = history_repo
+        self.card_repo: CardRepository = card_repo
 
     async def get_wallets(self, email: str) -> List[Wallet]:
         user = await self.user_repo.get_user_by_email(email)
@@ -58,8 +58,8 @@ class Wallets:
             currency_info = json.loads(currency_list).get("Valute").get(accept_currency.short_name)
             currency_course = round(currency_info.get("Nominal") / currency_info.get("Value"), 6)
 
-            await self.history_repo.add_operation(sender_wallet_id, sender_wallet.score, money_sum * -1, TypeOperation.TRANSFER,
-                                                  sender_wallet.score - money_sum)
+            await self.history_repo.add_operation(sender_wallet_id, sender_wallet.score, money_sum * -1,
+                                                  TypeOperation.TRANSFER, sender_wallet.score - money_sum)
             sender_wallet = await self.repo.change_wallet_score(sender_wallet.id, money_sum * -1)
 
             await self.history_repo.add_operation(accept_wallet_id, accept_wallet.score, money_sum,
@@ -68,3 +68,23 @@ class Wallets:
             accept_wallet = await self.repo.change_wallet_score(accept_wallet.id, money_sum * currency_course)
 
         return [sender_wallet, accept_wallet]
+
+    async def withdraw_to_card(self, wallet_id: int, card_number: str, money_sum: int):
+        wallet = await self.repo.get_wallet_by_id(wallet_id)
+        if not wallet:
+            raise WalletNotFound
+
+        card = await self.card_repo.get_card_by_card_number(card_number)
+        if not card:
+            raise CardNotFound
+
+        if wallet.score < money_sum:
+            raise NotEnoughMoney
+
+        await self.history_repo.add_operation(wallet.id, wallet.score,
+                                              money_sum * -1, TypeOperation.WITHDRAWAL, wallet.score - money_sum)
+
+        wallet = await self.repo.change_wallet_score(wallet.id, money_sum * -1)
+        card = await self.card_repo.change_card_balance_by_card_number(card_number, money_sum)
+        return [wallet, card]
+

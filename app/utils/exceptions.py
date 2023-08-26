@@ -20,3 +20,7 @@ class CardAlreadyExists(Exception):
 
 class NotEnoughMoney(Exception):
     pass
+
+
+class CardNotFound(Exception):
+    pass

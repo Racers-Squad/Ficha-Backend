@@ -1,7 +1,7 @@
 from fastapi import Depends
 
 from app.db.repositories.bank import BankRepository
-from app.db.repositories.cards import CardsRepository
+from app.db.repositories.cards import CardRepository
 from app.db.repositories.currency import CurrencyRepository
 from app.db.repositories.history import HistoryRepository
 from app.db.repositories.user import UserRepository
@@ -21,8 +21,9 @@ def get_user_service(repo: UserRepository = Depends(get_repository(UserRepositor
 def get_wallet_service(repo: WalletRepository = Depends(get_repository(WalletRepository)),
                        user_repo: UserRepository = Depends(get_repository(UserRepository)),
                        currency_repo: CurrencyRepository = Depends(get_repository(CurrencyRepository)),
-                       history_repo: HistoryRepository = Depends(get_repository(HistoryRepository))):
-    return Wallets(repo, user_repo, currency_repo, history_repo)
+                       history_repo: HistoryRepository = Depends(get_repository(HistoryRepository)),
+                       card_repo: CardRepository = Depends(get_repository(CardRepository))):
+    return Wallets(repo, user_repo, currency_repo, history_repo, card_repo)
 
 
 def get_bank_service(repo: BankRepository = Depends(get_repository(BankRepository))):
@@ -33,7 +34,7 @@ def get_currency_service(repo: CurrencyRepository = Depends(get_repository(Curre
     return Currencies(repo)
 
 
-def get_card_service(repo: CardsRepository = Depends(get_repository(CardsRepository)),
+def get_card_service(repo: CardRepository = Depends(get_repository(CardRepository)),
                      user_repo: UserRepository = Depends(get_repository(UserRepository)),
                      bank_repo: BankRepository = Depends(get_repository(BankRepository)),
                      wallet_repo: WalletRepository = Depends(get_repository(WalletRepository))):

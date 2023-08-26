@@ -2,7 +2,7 @@ import random
 import datetime
 
 from app.db.repositories.bank import BankRepository
-from app.db.repositories.cards import CardsRepository
+from app.db.repositories.cards import CardRepository
 from app.db.repositories.user import UserRepository
 from app.db.repositories.wallet import WalletRepository
 from app.utils.exceptions import UserNotFound, BankNotFound, WalletNotFound
@@ -11,7 +11,7 @@ from app.utils.exceptions import UserNotFound, BankNotFound, WalletNotFound
 class Cards:
 
     def __init__(self, repo, user_repo, bank_repo, wallet_repo):
-        self.repo: CardsRepository = repo
+        self.repo: CardRepository = repo
         self.user_repo: UserRepository = user_repo
         self.bank_repo: BankRepository = bank_repo
         self.wallet_repo: WalletRepository = wallet_repo

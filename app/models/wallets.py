@@ -23,3 +23,8 @@ class ChangeRequest(BaseModel):
     sender_wallet_id: int
     accept_wallet_id: int
     money_sum: int
+
+
+class WithdrawRequest(BaseModel):
+    card_number: str
+    money_sum: int
