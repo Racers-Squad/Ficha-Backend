@@ -128,7 +128,7 @@ async def withdraw_to_card(
 
 
 @router.get(
-    path="/{email}",
+    path="/{email}/history",
     description="Метод получения истории кошельков",
     response_model=List[List[History]]
 )
